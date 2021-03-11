@@ -2,15 +2,7 @@ import { fetchEarthquakes } from './lib/earthquakes';
 import { el, element, formatDate } from './lib/utils';
 import { init, createPopup } from './lib/map';
 
-const map = document.querySelector('.map');
-init(map);
-
-document.addEventListener('DOMContentLoaded', async () => {
-  const queryString = window.location.search;
-  const urlParams = new URLSearchParams(queryString);
-  const type = urlParams.has('type') ? urlParams.get('type') : 'all';
-  const period = urlParams.has('period') ? urlParams.get('period') : 'hour';
-
+async function quakes(type, period) {
   // "hleð gögnum"
   const loading = document.querySelector('.loading');
   if (loading.classList.contains('hidden')) {
@@ -25,7 +17,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Fjarlægjum "hleð gögnum"
   const parent = loading.parentNode;
-  parent.removeChild(loading);
+  //parent.removeChild(loading);
 
   if (!earthquakes) {
     parent.appendChild(
@@ -35,7 +27,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   const h1 = document.querySelector('.h1');
   const ul = document.querySelector('.earthquakes');
-  
+
   const cacheAndTime = document.querySelector('.cache');
 
   h1.append(eqTitle);
@@ -77,5 +69,31 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     ul.appendChild(li);
   });
-  
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  const type = urlParams.has('type') ? urlParams.get('type') : 'all';
+  const period = urlParams.has('period') ? urlParams.get('period') : 'hour';
+
+  const map = document.querySelector('.map');
+  init(map);
+
+  const links = document.querySelectorAll('ul.nav a');
+
+  links.forEach((link) => {
+    const url = new URL(link.href);
+    const { searchParams } = url;
+
+    const linkPeriod = searchParams.get('period');
+    const linkType = searchParams.get('type');
+
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      quakes(linkType, linkPeriod);
+    });
+  });
+
+  quakes(type, period);
 });

@@ -8,12 +8,14 @@ const {
 } = process.env;
 
 let client;
+let asyncGet;
+let asyncSet;
+
 if (url) {
   client = redis.createClient({ url });
+  asyncGet = util.promisify(client.get).bind(client);
+  asyncSet = util.promisify(client.set).bind(client);
 }
-
-const asyncGet = util.promisify(client.get).bind(client);
-const asyncSet = util.promisify(client.set).bind(client);
 
 export async function getter(cacheKey) {
   if (!client || !asyncGet) {
