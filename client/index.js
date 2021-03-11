@@ -1,6 +1,6 @@
 import { fetchEarthquakes } from './lib/earthquakes';
 import { el, element, formatDate } from './lib/utils';
-import { init, createPopup } from './lib/map';
+import { init, createPopup, clearMarkers } from './lib/map';
 
 async function quakes(type, period) {
   // "hleð gögnum"
@@ -16,19 +16,19 @@ async function quakes(type, period) {
   const eqCacheBool = eqCache === true ? '' : 'ekki';
 
   // Fjarlægjum "hleð gögnum"
-  const parent = loading.parentNode;
-  //parent.removeChild(loading);
+  loading.classList.add('hidden');
 
   if (!earthquakes) {
-    parent.appendChild(
-      el('p', 'Villa við að sækja gögn'),
-    );
+    loading.classList.add('Villa við að sækja gögn');
   }
 
   const h1 = document.querySelector('.h1');
+  h1.innerHTML = '';
   const ul = document.querySelector('.earthquakes');
+  ul.innerHTML = '';
 
   const cacheAndTime = document.querySelector('.cache');
+  cacheAndTime.innerHTML = '';
 
   h1.append(eqTitle);
   cacheAndTime.append(`Gögn eru ${eqCacheBool} í cache. Fyrispurn tók ${eqTime} sek`);
@@ -91,6 +91,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     link.addEventListener('click', (e) => {
       e.preventDefault();
+      clearMarkers();
       quakes(linkType, linkPeriod);
     });
   });
