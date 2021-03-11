@@ -1,6 +1,8 @@
 import { fetchEarthquakes } from './lib/earthquakes';
 import { el, element, formatDate } from './lib/utils';
 import { init, createPopup } from './lib/map';
+const map = document.querySelector('.map');
+init(map);
 
 document.addEventListener('DOMContentLoaded', async () => {
   const queryString = window.location.search;
@@ -32,8 +34,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   const h1 = document.querySelector('.h1');
   const ul = document.querySelector('.earthquakes');
-  const map = document.querySelector('.map');
-  init(map);
+  
   const cacheAndTime = document.querySelector('.cache');
 
   h1.append(eqTitle);
@@ -75,4 +76,5 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     ul.appendChild(li);
   });
+  
 });
